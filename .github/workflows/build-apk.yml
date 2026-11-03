@@ -1,0 +1,55 @@
+name: Compilar APK Android
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build-android:
+    name: Compilar Planilla de Caja
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Descargar el proyecto
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Instalar dependencias del sistema
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git zip unzip autoconf libtool pkg-config \
+            zlib1g-dev libncurses5-dev libncursesw5-dev \
+            libtinfo6 cmake libffi-dev libssl-dev \
+            build-essential ccache
+
+      - name: Instalar Buildozer
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install buildozer cython==0.29.36
+
+      - name: Compilar con Buildozer
+        run: buildozer -v android debug
+
+      - name: Guardar el APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: AppAzar-APK
+          path: bin/*.apk
+          if-no-files-found: error
+          retention-days: 7
