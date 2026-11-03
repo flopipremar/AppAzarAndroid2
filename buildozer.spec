@@ -9,6 +9,7 @@ source.include_exts = py,kv,png,jpg,jpeg,atlas
 source.exclude_dirs = tests,bin,.git,.buildozer,__pycache__
 version = 1.0.0
 requirements = python3,kivy
+p4a.branch = develop
 orientation = portrait
 fullscreen = 0
 
